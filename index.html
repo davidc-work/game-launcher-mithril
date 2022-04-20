@@ -2,6 +2,35 @@
 
 <head>
     <link rel="stylesheet" href="index.css">
+    <script>if (typeof module === 'object') {
+            window.module = module; module = undefined;
+        }
+    </script>
+    <script src="node_modules/feather-icons/dist/feather.js"></script>
+    <script src="frameworks/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+    <script>if (window.module) module = window.module;</script>
+</head>
+
+<body>
+    <script>
+        const m = require('mithril');
+        const root = document.body;
+
+        const MainComponent = require('./components/Main.js');
+
+        m.mount(root, MainComponent);
+    </script>
+</body>
+
+</html>
+
+<!-- <html>
+
+<head>
+    <link rel="stylesheet" href="index.css">
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
     <script src="node_modules/feather-icons/dist/feather.js"></script>
     <script src="frameworks/socket.io.min.js"></script>
@@ -67,4 +96,4 @@
     </div>
 </body>
 
-</html>
+</html> -->
