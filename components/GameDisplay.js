@@ -3,12 +3,13 @@ const GameDisplayHeaderComponent = require('./GameDisplayHeader');
 const CommunityComponent = require('./Community');
 
 const GameDisplayComponent = {
+    GameDisplayHeaderComponent,
+    CommunityComponent,
     view: () => {
         return m('div#game-display', [
             m('div#game-display-content', [
                 m(GameDisplayHeaderComponent),
-                m(btn.CreateCommunityBtnComponent),
-                m(CommunityComponent)
+                page.community == 'exists' ? m(CommunityComponent) : m(btn.CreateCommunityBtnComponent)
             ])
         ]);
     }

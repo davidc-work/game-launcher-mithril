@@ -1,14 +1,24 @@
 const btn = require('./Button');
 
+let s = [];
+
 const MainCommunityContent = {
     view: () => {
         return m('div#main-community-content', [
             m('div.sidebar-header', 'Public Servers'),
             m('div#public-servers-list-container', [
-                m('div#public-servers-list')
+                m('div#public-servers-list', s)
             ]),
             m(btn.CreatePublicServerBtnComponent)
         ]);
+    },
+    setPublicServers: servers => {
+        s = servers.map(server => {
+            return m('div.server-list-element', { onclick: () => routeCommunityServer(server.name) }, [
+                m('p', server.name)
+            ])
+        });
+        m.redraw();
     }
 }
 

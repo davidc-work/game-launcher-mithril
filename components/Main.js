@@ -3,6 +3,8 @@ const SidebarComponent = require('./Sidebar.js');
 const GameDisplayComponent = require('./GameDisplay');
 
 const MainComponent = {
+    SidebarComponent,
+    GameDisplayComponent,
     view: () => {
         return m('div#main', [
             m(btn.ResetBtnComponent),
