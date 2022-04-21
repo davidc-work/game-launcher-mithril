@@ -5,6 +5,7 @@ const urlFile = require('url-filea');
 
 const shell = require('electron').shell;
 const VDF = require('@node-steam/vdf');
+const { GOOGLE_IMG_SCRAP, GOOGLE_QUERY } = require('google-img-scrap');
 
 const parseACF = require('./modules/acf');
 const steam = require('./modules/steam');
@@ -13,7 +14,7 @@ let steamInstallDir;
 
 let steamGames, allGames;
 let com, selectedPublicServer, selectedChannel;
-let selectedGame = {};
+let selectedGame = {}, gameBannerImg;
 
 const socket = io('http://127.0.0.1:3001');
 socket.on('connect', () => {
@@ -51,11 +52,34 @@ const createPublicServer = async () => {
     community.createPublicServer(selectedGame.communityName);
 }
 
-const setCommunity = communityName => {
+const setCommunity = gameName => {
     return new Promise(async resolve => {
-        com = await updateCommunity(communityName);
+        const game = allGames.find(game => game.name == gameName);
+
+        selectedGame = {
+            name: game.name,
+            url: 'steam://rungameid/' + game.appid,
+            communityName: game.name.toLowerCase().replaceAll(' ', '')
+        };
+
+        $('#header-text-container > p').text(game.name);
+
+        com = await updateCommunity(selectedGame.communityName);
         setPage('communitySidebar', 'main');
         await routeCommunityHome();
+
+        (async function () {
+            const img = await GOOGLE_IMG_SCRAP({
+                search: game.name + ' game banner image',
+                query: {
+                    SIZE: GOOGLE_QUERY.SIZE.LARGE
+                }
+            });
+
+            gameBannerImg = img.result[0];
+            m.redraw();
+        })();
+
         resolve();
     });
 }
@@ -64,7 +88,6 @@ const updateCommunity = communityName => {
     return new Promise(resolve => {
         (async () => {
             const result = await community.get(communityName);
-            console.log(result);
 
             setPage('community', result.exists ? 'exists' : 'not-exists');
 
@@ -81,6 +104,7 @@ const routeCommunityHome = () => {
         selectedChannel = undefined;
         MainComponent.GameDisplayComponent.CommunityComponent.CommunitySidebarComponent.MainCommunityContentComponent.setPublicServers(com.publicServers);
 
+        setPage('communitySidebar', 'main');
         setPage('communityMain', 'main');
 
         resolve();
@@ -135,29 +159,21 @@ const selectChannel = async (server, channelName) => {
     setPage('communityMain', 'server');
 }
 
-const selectGame = async game => {
+const selectGame = async gameName => {
     const listElements = $('.game-sidebar-list-element').toArray();
-    const selectedElement = listElements.find(e => e.children[0].innerText == game.name);
+    const selectedElement = listElements.find(e => e.children[0].innerText == gameName);
 
     $('.game-sidebar-list-element').removeClass('selected');
     $(selectedElement).addClass('selected');
 
-    selectedGame = {
-        name: game.name,
-        url: 'steam://rungameid/' + game.appid,
-        communityName: game.name.toLowerCase().replaceAll(' ', '')
-    };
-
-    $('#header-text-container > p').text(game.name);
-
-    await setCommunity(selectedGame.communityName);
+    await setCommunity(gameName);
 
     await routeCommunityHome();
 }
 
 const createCommunity = async () => {
     const result = await community.create(selectedGame.communityName);
-    await setCommunity(selectedGame.communityName);
+    await setCommunity(selectedGame.name);
 }
 
 const populateGamesList = () => {
@@ -166,13 +182,13 @@ const populateGamesList = () => {
     const sidebarElement = $('#game-sidebar');
 
     allGames.forEach(game => {
-        var e = $('<div>').addClass('game-sidebar-list-element').click(function () { selectGame(game) });
+        var e = $('<div>').addClass('game-sidebar-list-element').click(function () { selectGame(game.name) });
         $('<p>').text(game.name).appendTo(e);
 
         sidebarElement.append(e);
     });
 
-    selectGame(allGames[0]);
+    selectGame(allGames[0].name);
 }
 
 const playSelectedGame = () => {

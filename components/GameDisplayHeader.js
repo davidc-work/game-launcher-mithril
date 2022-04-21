@@ -2,7 +2,10 @@ const btn = require('./Button.js');
 
 const GameDisplayHeaderComponent = {
     view: () => {
-        return m('div#game-display-header', [
+        const backgroundImg = gameBannerImg ? ('url(' + gameBannerImg.url + ')') : 'unset';
+        const s = 'background-image: ' + backgroundImg + ';';
+        return m('div#game-display-header', { style: s }, [
+            m('div.cover'),
             m('div#header-text-container', [
                 m('p.header-text.header-1', '')
             ]),

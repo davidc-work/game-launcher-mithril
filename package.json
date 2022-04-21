@@ -19,6 +19,7 @@
     "electron-reload": "^2.0.0-alpha.1",
     "feather-icons": "^4.29.0",
     "fetch-installed-software": "^0.0.7",
+    "google-img-scrap": "^1.0.6",
     "mithril": "^2.0.4",
     "open-shortcut": "^4.0.0",
     "shortcut-url": "^4.0.0",

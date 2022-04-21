@@ -29,6 +29,7 @@ const getGames = () => {
 
                 const targetGame = games.find(game => game.fullPath == parsedManifest.fullPath);
                 targetGame.appid = parsedManifest.appid;
+                targetGame.name = parsedManifest.name;
             }
         });
 
