@@ -242,7 +242,7 @@ body {
 
 .chat-msg {
     color: white;
-    margin: 20px 0 20px 0;
+    margin-top: 20px;
     white-space: normal;
 }
 
@@ -250,9 +250,13 @@ body {
     margin: 5px;
 }
 
-.chat-msg>p:first-child {
+.chat-msg:not(.no-title)>p:first-child {
     color: rgb(0, 172, 230);
     font-size: 18px;
+}
+
+.chat-msg.no-title {
+    margin: 0;
 }
 
 .chat-msg:first-child {

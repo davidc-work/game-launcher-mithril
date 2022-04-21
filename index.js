@@ -1,3 +1,5 @@
+let user = 'test_user';
+
 m = m;  //I hate VSCode "smart" features...
 const fs = require('fs');
 const path = require('path');

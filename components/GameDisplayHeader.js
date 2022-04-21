@@ -10,7 +10,9 @@ const GameDisplayHeaderComponent = {
                 m('p.header-text.header-1', '')
             ]),
             m(btn.PlayBtnComponent),
-            m('input', { id: 'username-input', type: 'text', value: 'test_user', placeholder: 'username...', style: 'position: absolute; top: 5px; left: 5px; width: 100px;' })
+            m('input', {
+                id: 'username-input', type: 'text', value: user, placeholder: 'username...', style: 'position: absolute; top: 5px; left: 5px; width: 100px;', onkeyup: e => user = e.target.value
+            })
         ]);
     }
 }
