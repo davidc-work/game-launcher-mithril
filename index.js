@@ -20,7 +20,13 @@ socket.on('connect', () => {
     console.log('connected');
 });
 
-socket.on('update-chat', () => console.log('update chat'));
+socket.on('add-message', data => {
+    console.log(data);
+    CommunityDisplayComponent.addChat({
+        user: data.user,
+        msg: data.msg
+    });
+});
 
 const community = require('./modules/community')(socket);
 
@@ -125,7 +131,7 @@ const selectChannel = async (server, channelName) => {
 
     $('.channel-list-item').removeClass('selected');
     $($('.channel-list-item').toArray().find(e => e.children[0].innerText == channelName)).addClass('selected');
-    MainComponent.GameDisplayComponent.CommunityComponent.CommunityDisplayComponent.setChat(chat.messages);
+    CommunityDisplayComponent.setChat(chat.messages);
     setPage('communityMain', 'server');
 }
 
@@ -183,14 +189,5 @@ $(document).ready(() => {
         steamInstallDir = steamInfo.DisplayIcon.slice(0, steamInfo.DisplayIcon.lastIndexOf('\\'));
 
         populateGamesList();
-    });
-
-    $('.chat-box > input').on('keyup', async e => {
-        if (e.key == 'Enter') {
-            console.log(com);
-            const result = await sendChat(e.target.value, selectedChannel, socket);
-            console.log(result);
-            e.target.value = '';
-        }
     });
 });

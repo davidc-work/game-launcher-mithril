@@ -22,6 +22,7 @@
         const root = document.body;
 
         const MainComponent = require('./components/Main.js');
+        const { CommunityDisplayComponent } = MainComponent.GameDisplayComponent.CommunityComponent;
         console.log(MainComponent);
 
         m.mount(root, MainComponent);

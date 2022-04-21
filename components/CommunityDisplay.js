@@ -1,5 +1,12 @@
 let chat = [m('div', { style: 'color: white;' }, 'No chat history.')];
 
+const constructMsg = msg => {
+    return m('div.chat-msg', [
+        m('p', msg.user),
+        m('p', msg.msg)
+    ]);
+}
+
 const CommunityDisplayComponent = {
     view: () => {
         return m('div#community-display', [
@@ -14,7 +21,14 @@ const CommunityDisplayComponent = {
                             m('i', { 'data-feather': 'plus-circle' }),
                             m('input', {
                                 type: 'text',
-                                placeholder: 'Type something...'
+                                placeholder: 'Type something...',
+                                onkeyup: async function (e) {
+                                    let user = $('#username-input').val();
+                                    if (e.key == 'Enter') {
+                                        const result = await sendChat(user, e.target.value, selectedChannel, socket);
+                                        e.target.value = '';
+                                    }
+                                }
                             })
                         ])
                     ])
@@ -22,13 +36,11 @@ const CommunityDisplayComponent = {
         ]);
     },
     setChat: messages => {
-        chat = messages.map(msg => {
-            return m('div.chat-msg', [
-                m('p', msg.user),
-                m('p', msg.msg)
-            ])
-        })
-
+        chat = messages.map(msg => constructMsg(msg));
+        m.redraw();
+    },
+    addChat: message => {
+        chat.push(constructMsg(message));
         m.redraw();
     }
 }

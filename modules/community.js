@@ -33,9 +33,9 @@ const community = socket => {
 
             } else console.error('Community does not exist!');
         },
-        sendChat: async (msg, channel) => {
+        sendChat: async (user, msg, channel) => {
             return new Promise(resolve => {
-                socket.emit('send-message', { msg, channel_id: channel._id }, answer => {
+                socket.emit('send-message', { user, msg, channel_id: channel._id }, answer => {
                     resolve(answer);
                 });
             });
