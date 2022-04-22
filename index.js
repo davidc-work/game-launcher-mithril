@@ -36,7 +36,9 @@ const community = require('./modules/community')(socket);
 let page = {
     community: 'exists',
     communityMain: 'main',
-    communitySidebar: 'main'
+    communitySidebar: 'main',
+    overlay: false,
+    createServerPrompt: false
 }
 
 const updateGamesList = () => {
@@ -50,8 +52,23 @@ const setPage = (component, pageName) => {
     requestAnimationFrame(() => feather.replace({ color: 'white' }));
 }
 
-const createPublicServer = async () => {
-    community.createPublicServer(selectedGame.communityName);
+const setPublicServers = () => {
+    return new Promise(async resolve => {
+        const publicServers = await community.getPublicServers(com._id);
+        console.log(publicServers);
+        await MainCommunityContentComponent.setPublicServers(publicServers);
+        resolve();
+    })
+}
+
+const showPublicServerPrompt = () => {
+    page.overlayPrompt = 'create-server';
+    page.overlay = true;
+}
+
+const createPublicServer = async serverName => {
+    const result = await community.createPublicServer(com.name, serverName);
+    await setPublicServers();
 }
 
 const setCommunity = gameName => {
@@ -68,7 +85,6 @@ const setCommunity = gameName => {
 
         com = await updateCommunity(selectedGame.communityName);
         setPage('communitySidebar', 'main');
-        await routeCommunityHome();
 
         (async function () {
             const img = await GOOGLE_IMG_SCRAP({
@@ -89,7 +105,7 @@ const setCommunity = gameName => {
 const updateCommunity = communityName => {
     return new Promise(resolve => {
         (async () => {
-            const result = await community.get(communityName);
+            const result = await community.getCommunity(communityName);
 
             setPage('community', result.exists ? 'exists' : 'not-exists');
 
@@ -104,7 +120,7 @@ const routeCommunityHome = () => {
 
         selectedPublicServer = undefined;
         selectedChannel = undefined;
-        MainComponent.GameDisplayComponent.CommunityComponent.CommunitySidebarComponent.MainCommunityContentComponent.setPublicServers(com.publicServers);
+        setPublicServers();
 
         setPage('communitySidebar', 'main');
         setPage('communityMain', 'main');
@@ -145,19 +161,20 @@ const routeCommunityServer = serverName => {
 }
 
 const selectChannel = async (server, channelName) => {
+    console.log(server);
     const channel = server.channels.find(channel => channel.name == channelName);
     selectedChannel = channel;
 
-    const answer = await community.joinChannel(selectedChannel._id);
-    console.log(answer);
+    const channelData = await community.joinChannel(selectedChannel._id);
+    console.log(channelData);
 
-    const chat = channel.chat;
+    const { chat } = channelData;
 
     if (!chat) return;
 
     $('.channel-list-item').removeClass('selected');
     $($('.channel-list-item').toArray().find(e => e.children[0].innerText == channelName)).addClass('selected');
-    CommunityDisplayComponent.setChat(chat.messages);
+    CommunityDisplayComponent.setChat(chat);
     setPage('communityMain', 'server');
 }
 
@@ -174,7 +191,7 @@ const selectGame = async gameName => {
 }
 
 const createCommunity = async () => {
-    const result = await community.create(selectedGame.communityName);
+    const result = await community.createCommunity(selectedGame.communityName);
     await setCommunity(selectedGame.name);
 }
 

@@ -13,7 +13,12 @@ const MainCommunityContent = {
             m(btn.CreatePublicServerBtnComponent)
         ]);
     },
-    setPublicServers: servers => {
+    setPublicServers: async servers => {
+        console.log(servers);
+
+        s = [];
+        m.redraw.sync();  //temporary because idk how to fix this
+
         s = servers.map(server => {
             return m('div.server-list-element', { onclick: () => routeCommunityServer(server.name) }, [
                 m('p', server.name)

@@ -15,6 +15,14 @@ const createButton = o => {
     });
 }
 
+const BlueBtnComponent = o => {
+    let options = Object.assign({
+        type: 1,
+        color: 'blue'
+    }, o);
+    return (createButton(options));
+}
+
 const ResetBtnComponent = () => {
     return (createButton({
         text: 'Reset',
@@ -49,12 +57,13 @@ const CreatePublicServerBtnComponent = () => {
     return (createButton({
         text: '+ Create Public Server',
         type: 'sidebar',
-        onclick: () => createPublicServer()
+        onclick: () => showPublicServerPrompt()
     }));
 }
 
 module.exports = {
     createButton,
+    BlueBtnComponent,
     ResetBtnComponent,
     PlayBtnComponent,
     CreateCommunityBtnComponent,

@@ -2,7 +2,7 @@ const axios = require('axios');
 const url = 'http://localhost:3000';
 
 const community = socket => {
-    const get = name => {
+    const getCommunity = name => {
         return new Promise(resolve => {
             socket.emit('get-community', name, answer => {
                 resolve(answer);
@@ -12,7 +12,14 @@ const community = socket => {
 
     return ({
         socket,
-        get,
+        getCommunity,
+        getPublicServers: community_id => {
+            return new Promise(resolve => {
+                socket.emit('get-public-servers', community_id, answer => {
+                    resolve(answer);
+                });
+            });
+        },
         getServer: (communityName, serverName) => {
             return new Promise(resolve => {
                 socket.emit('get-server', { communityName, serverName }, answer => {
@@ -20,7 +27,7 @@ const community = socket => {
                 });
             });
         },
-        create: name => {
+        createCommunity: name => {
             return new Promise(resolve => {
                 socket.emit('create-community', name, answer => {
                     resolve(answer);
@@ -28,10 +35,11 @@ const community = socket => {
             });
         },
         createPublicServer: async (communityName, serverName) => {
-            const com = await get(communityName, socket);
-            if (com.data.exists) {
-
-            } else console.error('Community does not exist!');
+            return new Promise(async resolve => {
+                socket.emit('create-public-server', { communityName, serverName }, answer => {
+                    resolve(answer);
+                });
+            });
         },
         sendChat: async (user, msg, channel) => {
             return new Promise(resolve => {

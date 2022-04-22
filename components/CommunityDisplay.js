@@ -8,7 +8,17 @@ const constructMsg = msg => {
     ]);
 }
 
-const addMsg = msg => {
+const scrollToBottom = () => {
+    const chatElement = $('.chat')[0];
+    if (chatElement) chatElement.scrollTop = chatElement.scrollHeight;
+}
+
+const addMsg = (msg, redraw = true) => {
+    let goToBottom;
+    const chatElement = $('.chat')[0];
+    if (chatElement) goToBottom = chatElement.scrollHeight - chatElement.scrollTop == chatElement.clientHeight;
+    if (msg.user == user) goToBottom = true;
+
     const prev = chatHistory.slice(-1)[0];
     const isPrev = prev ? prev.user == msg.user : false;
 
@@ -23,7 +33,9 @@ const addMsg = msg => {
     }
 
     chatHistory.push(msg);
-    m.redraw();
+    if (redraw) m.redraw();
+
+    if (goToBottom) requestAnimationFrame(scrollToBottom);
 }
 
 const CommunityDisplayComponent = {
@@ -42,7 +54,6 @@ const CommunityDisplayComponent = {
                                 type: 'text',
                                 placeholder: 'Type something...',
                                 onkeyup: async function (e) {
-                                    //let user = $('#username-input').val();
                                     if (e.key == 'Enter') {
                                         const result = await sendChat(user, e.target.value, selectedChannel, socket);
                                         e.target.value = '';
@@ -54,17 +65,15 @@ const CommunityDisplayComponent = {
                 ])
         ]);
     },
-    setChat: messages => {
+    setChat: function (messages) {
         chat = [];
         chatHistory = [];
-        messages.forEach(msg => addMsg(msg))
-        //chat = messages.map(msg => constructMsg(msg));
-        //m.redraw();
+        messages.forEach(msg => addMsg(msg, false));
+        m.redraw();
+        requestAnimationFrame(scrollToBottom);
     },
     addChat: message => {
         addMsg(message);
-        //chat.push(constructMsg(message));
-        //m.redraw();
     }
 }
 
