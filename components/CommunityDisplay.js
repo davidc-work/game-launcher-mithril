@@ -1,3 +1,5 @@
+const CommunityMainComponent = require('./CommunityMain.js');
+
 let chatHistory = [];
 let chat = [];
 
@@ -41,8 +43,8 @@ const addMsg = (msg, redraw = true) => {
 const CommunityDisplayComponent = {
     view: () => {
         return m('div#community-display', [
-            page.communityMain == 'main' ?
-                m('div#community-main', { style: 'color: white;' }, 'Community main!') :
+            page.communityMain ?
+                m(CommunityMainComponent) :
                 m('div#server-chat-all', [
                     m('div.chat-container', [
                         chat.length ? m('div.chat', chat) : m('div', { style: 'color: white;' }, 'This chat is empty!')

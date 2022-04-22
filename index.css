@@ -42,9 +42,23 @@ body {
 
 .btn-sidebar {
     width: 100%;
+    font-size: 14px;
     color: white;
     text-align: center;
     padding: 5px 0 5px 0;
+    border-radius: 10px;
+    transition: 0.25s;
+}
+
+.channel-list-item.btn-sidebar {
+    border-radius: unset;
+}
+
+.channel-container {
+    background-color: #2f3538;
+    border-radius: 10px;
+    margin: 15px;
+    padding-bottom: 10px;
 }
 
 .btn-sidebar>p {
@@ -95,7 +109,7 @@ body {
 }
 
 #game-display-header {
-    width: 100%;
+    width: calc(100% + 2px);
     height: 200px;
     position: relative;
     background-color: rgb(49, 81, 102);
@@ -151,14 +165,20 @@ body {
     background-color: rgb(41, 43, 46);
 }
 
-#community-sidebar-container {
+#community-sidebar-all {
     display: inline-block;
-    vertical-align: top;
     width: 200px;
+}
+
+#community-sidebar-container {
+    vertical-align: top;
+    width: 100%;
     height: 100%;
-    background-color: rgb(44, 47, 51);
+    background-color: rgb(67 75 86);
     overflow-x: hidden;
     overflow-y: scroll;
+    padding-left: 8px;
+    box-sizing: border-box;
 }
 
 #community-sidebar {
@@ -166,11 +186,28 @@ body {
     height: calc(100% - 30px);
 }
 
+#community-sidebar-header {
+    width: 100%;
+    height: 50px;
+}
+
+.community-sidebar-server-title {
+    text-align: center;
+    margin: 15px;
+    margin-bottom: 25px;
+    color: white;
+    font-size: 18px;
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-radius: 10px;
+}
+
 #community-display {
     display: inline-block;
-    width: calc(100% - 206px);
+    width: calc(100% - 198px);
     height: 100%;
     background-color: #343434;
+    vertical-align: top;
 }
 
 #public-servers-all {
@@ -180,15 +217,15 @@ body {
 }
 
 #public-servers-list-container {
-    margin-top: 5px;
     height: fit-content;
     max-height: 600px;
-    padding: 10px;
     box-sizing: border-box;
+    margin-bottom: 15px;
 }
 
 #public-servers-list {
-    border-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     background-color: rgb(56, 60, 65);
     width: 100%;
     height: 100%;
@@ -205,6 +242,7 @@ body {
     text-indent: 10px;
     width: 100%;
     transition: 0.25s;
+    font-size: 14px;
 }
 
 .server-list-element:hover {
@@ -226,18 +264,42 @@ body {
 }
 
 #main-community-content {
-    padding: 20px 0 20px 0;
+    padding: 20px 10px 20px 10px;
 }
 
 .sidebar-header {
     color: white;
     text-align: center;
+    font-size: 18px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #536b8d;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.sidebar-server-header {
+    color: white;
+    text-align: center;
+    font-size: 18px;
+    background-color: #506778;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar-title {
+    color: rgb(255 255 255);
+    text-align: center;
+    line-height: 50px;
     font-size: 24px;
-    margin: 10px;
+    height: 100%;
+    background-color: #4f78af;
 }
 
 .channel-list-item.selected {
-    background-color: #3a4c60 !important;
+    background-color: #417ba1;
 }
 
 .chat-container {
@@ -415,6 +477,35 @@ input.dark-1:focus {
 }
 
 .btn-animated-1:hover {
-    background-color: #0775a5;
+    background-color: #2d3336;
     border-radius: 50%;
+}
+
+.navbar {
+    width: 100%;
+    height: 50px;
+    background-color: rgb(48 107 147);
+    text-align: center;
+}
+
+.navbar>.nav-btn {
+    width: 109px;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 50px;
+    color: white;
+    text-shadow: 0 0 7px black;
+    transition: 0.1s;
+    font-size: 14px;
+}
+
+.navbar>.nav-btn:hover {
+    background-color: rgb(60, 115, 151)
+}
+
+.navbar>.nav-btn.selected {
+    background-color: rgb(67 127 167)
 }

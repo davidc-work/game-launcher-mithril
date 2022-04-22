@@ -1,3 +1,4 @@
+const isDev = true;
 let user = 'test_user';
 
 m = m;  //I hate VSCode "smart" features...
@@ -26,7 +27,6 @@ let socket, community;
 let sendChat;
 
 const setSocket = serverUrl => {
-    console.log('setting socket');
     socket = io(serverUrl);
 
     socket.on('connect', () => {
@@ -53,9 +53,9 @@ const setSocket = serverUrl => {
 }
 
 let page = {
-    login: true,
+    login: !isDev,
     community: 'exists',
-    communityMain: 'main',
+    communityMain: 'hot',
     communitySidebar: 'main',
     overlay: false,
     createServerPrompt: false
@@ -75,7 +75,6 @@ const setPage = (component, pageName) => {
 const setPublicServers = () => {
     return new Promise(async resolve => {
         const publicServers = await community.getPublicServers(com._id);
-        console.log(publicServers);
         await MainCommunityContentComponent.setPublicServers(publicServers);
         resolve();
     })
@@ -142,7 +141,7 @@ const routeCommunityHome = () => {
         setPublicServers();
 
         setPage('communitySidebar', 'main');
-        setPage('communityMain', 'main');
+        setPage('communityMain', 'hot');
 
         resolve();
     });
@@ -180,12 +179,10 @@ const routeCommunityServer = serverName => {
 }
 
 const selectChannel = async (server, channelName) => {
-    console.log(server);
     const channel = server.channels.find(channel => channel.name == channelName);
     selectedChannel = channel;
 
     const channelData = await community.joinChannel(selectedChannel._id);
-    console.log(channelData);
 
     const { chat } = channelData;
 
@@ -194,7 +191,7 @@ const selectChannel = async (server, channelName) => {
     $('.channel-list-item').removeClass('selected');
     $($('.channel-list-item').toArray().find(e => e.children[0].innerText == channelName)).addClass('selected');
     CommunityDisplayComponent.setChat(chat);
-    setPage('communityMain', 'server');
+    setPage('communityMain', false);
 }
 
 const selectGame = async gameName => {
@@ -236,5 +233,5 @@ const playSelectedGame = () => {
 }
 
 $(document).ready(() => {
-
+    if (isDev) setSocket('http://localhost:3000');
 });
