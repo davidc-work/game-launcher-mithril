@@ -1,8 +1,13 @@
+@font-face {
+    font-family: sans-light;
+    src: url(assets/fonts/open-sans-light.ttf);
+}
+
 html,
 body {
     margin: 0;
-    font-family: sans-serif;
     background-color: rgb(34, 40, 49);
+    font-family: sans-light;
 }
 
 .btn {

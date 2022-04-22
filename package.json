@@ -4,11 +4,14 @@
   "description": "Launches games!",
   "main": "main.js",
   "devDependencies": {
-    "electron": "^18.0.4"
+    "electron": "^18.0.4",
+    "electron-builder": "^23.0.3"
   },
   "scripts": {
     "test": "test",
-    "start": "electron ."
+    "start": "electron .",
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder"
   },
   "author": "",
   "license": "ISC",
@@ -25,5 +28,11 @@
     "shortcut-url": "^4.0.0",
     "steam-acf-parser": "^1.0.0",
     "url-filea": "^1.0.0"
+  },
+  "build": {
+    "appId": "game-launcher-electron",
+    "mac": {
+      "category": "games"
+    }
   }
 }

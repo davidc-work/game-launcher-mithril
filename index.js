@@ -18,22 +18,42 @@ let steamGames, allGames;
 let com, selectedPublicServer, selectedChannel;
 let selectedGame = {}, gameBannerImg;
 
-const socket = io('http://127.0.0.1:3001');
-socket.on('connect', () => {
-    console.log('connected');
-});
+// const port = 3000;
+// const base = 'http://127.0.0.1';
+// const url = `${base}:${port}`;
 
-socket.on('add-message', data => {
-    console.log(data);
-    CommunityDisplayComponent.addChat({
-        user: data.user,
-        msg: data.msg
+let socket, community;
+let sendChat;
+
+const setSocket = serverUrl => {
+    console.log('setting socket');
+    socket = io(serverUrl);
+
+    socket.on('connect', () => {
+        console.log('connected');
     });
-});
 
-const community = require('./modules/community')(socket);
+    socket.on('add-message', data => {
+        console.log(data);
+        CommunityDisplayComponent.addChat({
+            user: data.user,
+            msg: data.msg
+        });
+    });
+
+    community = require('./modules/community')(socket);
+    sendChat = community.sendChat;
+
+    require('fetch-installed-software').getAllInstalledSoftware().then(programs => {
+        const steamInfo = programs.find(program => program.RegistryDirName == 'Steam');
+        steamInstallDir = steamInfo.DisplayIcon.slice(0, steamInfo.DisplayIcon.lastIndexOf('\\'));
+
+        populateGamesList();
+    });
+}
 
 let page = {
+    login: true,
     community: 'exists',
     communityMain: 'main',
     communitySidebar: 'main',
@@ -84,6 +104,7 @@ const setCommunity = gameName => {
         $('#header-text-container > p').text(game.name);
 
         com = await updateCommunity(selectedGame.communityName);
+        await setPublicServers();
         setPage('communitySidebar', 'main');
 
         (async function () {
@@ -103,14 +124,12 @@ const setCommunity = gameName => {
 }
 
 const updateCommunity = communityName => {
-    return new Promise(resolve => {
-        (async () => {
-            const result = await community.getCommunity(communityName);
+    return new Promise(async resolve => {
+        const result = await community.getCommunity(communityName);
 
-            setPage('community', result.exists ? 'exists' : 'not-exists');
+        setPage('community', result.exists ? 'exists' : 'not-exists');
 
-            resolve(result);
-        })();
+        resolve(result);
     });
 }
 
@@ -216,13 +235,6 @@ const playSelectedGame = () => {
     }
 }
 
-const sendChat = community.sendChat;
-
 $(document).ready(() => {
-    require('fetch-installed-software').getAllInstalledSoftware().then(programs => {
-        const steamInfo = programs.find(program => program.RegistryDirName == 'Steam');
-        steamInstallDir = steamInfo.DisplayIcon.slice(0, steamInfo.DisplayIcon.lastIndexOf('\\'));
 
-        populateGamesList();
-    });
 });

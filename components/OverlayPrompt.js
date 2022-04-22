@@ -14,7 +14,7 @@ const OverlayPromptComponent = {
                     m('div.prompt-main', [
                         m('p.prompt-label', 'Enter your new server\'s name...'),
                         m('div.input-container', [
-                            m('input.dark-1', { type: 'text', onkeyup: e => serverName = e.target.value }),
+                            m('input.dark-1', { type: 'text', onkeyup: e => serverName = e.target.value, placeholder: 'Server Name' }),
                             m(btn.createButton({
                                 text: 'Create',
                                 type: 1,
