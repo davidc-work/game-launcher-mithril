@@ -1,4 +1,5 @@
 const CommunityMainComponent = require('./CommunityMain.js');
+const CreatePostComponent = require('./CreatePost');
 const PostComponent = require('./Post');
 
 let chatHistory = [];
@@ -42,39 +43,48 @@ const addMsg = (msg, redraw = true) => {
     if (goToBottom) requestAnimationFrame(scrollToBottom);
 }
 
+const getPage = p => {
+    switch (p) {
+        case 'main':
+            return m(CommunityMainComponent);
+        case 'post':
+            return m(PostComponent(post));
+        case 'createPost':
+            return m(CreatePostComponent);
+        case 'channel':
+            return m('div#server-chat-all', [
+                m('div.chat-container', [
+                    chat.length ? m('div.chat', chat) : m('div', { style: 'color: white;' }, 'This chat is empty!')
+                ]),
+                m('div.chat-box-container', [
+                    m('div.chat-box', [
+                        m('i', { 'data-feather': 'plus-circle' }),
+                        m('input', {
+                            type: 'text',
+                            placeholder: 'Type something...',
+                            onkeyup: async function (e) {
+                                if (e.key == 'Enter') {
+                                    const result = await community.emit('send-message', {
+                                        user,
+                                        msg: e.target.value,
+                                        channel_id: selectedChannel._id
+                                    });
+                                    e.target.value = '';
+                                }
+                            }
+                        })
+                    ])
+                ])
+            ])
+        default:
+            return m('div.default')
+    }
+}
+
 const CommunityDisplayComponent = {
     CommunityMainComponent,
     view: () => {
-        return m('div#community-display', [
-            page.communityMain == 'main' ?
-                m(CommunityMainComponent) :
-                page.communityMain == 'post' ?
-                    m(PostComponent(post)) :
-                    m('div#server-chat-all', [
-                        m('div.chat-container', [
-                            chat.length ? m('div.chat', chat) : m('div', { style: 'color: white;' }, 'This chat is empty!')
-                        ]),
-                        m('div.chat-box-container', [
-                            m('div.chat-box', [
-                                m('i', { 'data-feather': 'plus-circle' }),
-                                m('input', {
-                                    type: 'text',
-                                    placeholder: 'Type something...',
-                                    onkeyup: async function (e) {
-                                        if (e.key == 'Enter') {
-                                            const result = await community.emit('send-message', {
-                                                user,
-                                                msg: e.target.value,
-                                                channel_id: selectedChannel._id
-                                            });
-                                            e.target.value = '';
-                                        }
-                                    }
-                                })
-                            ])
-                        ])
-                    ])
-        ]);
+        return m('div#community-display', [getPage(page.communityMain)]);
     },
     setChat: function (messages) {
         chat = [];

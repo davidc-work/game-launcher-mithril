@@ -63,7 +63,6 @@ const updateGamesList = () => {
 
 const setPage = (component, pageName) => {
     page[component] = pageName;
-    m.redraw();
     requestAnimationFrame(() => feather.replace({ color: 'white' }));
 }
 
@@ -88,9 +87,12 @@ const showPublicServerPrompt = () => {
     page.overlay = true;
 }
 
-const createPost = async data => {
-    const result = await community.emit('create-post', data);
-    console.log(result);
+const createPost = data => {
+    return new Promise(async resolve => {
+        const result = await community.emit('create-post', data);
+        //console.log(result);
+        resolve(result);
+    });
 }
 
 const createPublicServer = async serverName => {
@@ -154,6 +156,7 @@ const routeCommunityHome = () => {
 
         page.communitySidebar = 'main';
         page.communityMain = 'main';
+
         m.redraw();
 
         resolve();

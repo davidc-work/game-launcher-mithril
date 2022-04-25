@@ -451,7 +451,12 @@ body {
     margin: 10px;
 }
 
-input.dark-1 {
+.min-round {
+    border-radius: 5px !important;
+}
+
+input.dark-1,
+textarea.dark-1 {
     background-color: rgb(26 26 26);
     outline: none;
     padding: 7px 15px 7px 15px;
@@ -461,8 +466,15 @@ input.dark-1 {
     border: 2px solid #7a7a7a;
 }
 
-input.dark-1:focus {
+input.dark-1:focus,
+textarea.dark-1:focus {
     background-color: rgb(46 46 46);
+}
+
+textarea {
+    min-width: 200px;
+    min-height: 100px;
+    transition: background-color 0.15s, width 0s, height 0s !important;
 }
 
 .overlay-prompt .prompt-main {
@@ -496,6 +508,9 @@ input.dark-1:focus {
     height: 50px;
     background-color: rgb(48 107 147);
     text-align: center;
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
 }
 
 .navbar>.nav-btn {
@@ -521,7 +536,12 @@ input.dark-1:focus {
 }
 
 #posts-container {
+    position: relative;
     padding: 30px;
+    right: 0;
+    opacity: 1;
+    height: calc(100% - 110px);
+    overflow-y: scroll;
 }
 
 #posts-container .post-listing {
@@ -572,9 +592,14 @@ input.dark-1:focus {
 }
 
 .post {
+    position: relative;
     padding: 35px;
     padding-top: 45px;
     box-sizing: border-box;
+    opacity: 0;
+    animation: 0.25s enter-down;
+    animation-fill-mode: forwards;
+    animation-delay: 0.25s;
 }
 
 .post .title-container,
@@ -643,4 +668,72 @@ input.dark-1:focus {
 
 .back-btn>span {
     vertical-align: middle;
+}
+
+#create-post-btn {
+    background-color: rgb(57 119 141);
+    color: white;
+    font-size: 100px;
+    width: 80px;
+    height: 80px;
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    border-radius: 50%;
+    line-height: 76px;
+    text-indent: 12px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+#create-post-btn .pop-out-text {
+    opacity: 0;
+    width: 0;
+    text-align: center;
+    position: relative;
+    right: 50px;
+    bottom: 66px;
+    transition: 0.25s;
+}
+
+#create-post-btn .pop-out-text p {
+    color: white;
+    background-color: #5e5e5e42;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 14px;
+    padding: 10px;
+    width: fit-content;
+    text-indent: 0;
+    pointer-events: none;
+}
+
+#create-post-btn:hover {
+    transform: scale(1.2);
+    background-color: rgb(74, 153, 182);
+}
+
+#create-post-btn:hover .pop-out-text {
+    width: 200px;
+    right: 150px;
+    opacity: 1;
+}
+
+#create-post-btn>p {
+    margin: 0;
+}
+
+.create-post {
+    padding: 35px;
+    padding-top: 45px;
+}
+
+.create-post .title-input {
+    margin-bottom: 15px;
+}
+
+.create-post .body-input {
+    width: 600px;
+    height: 400px;
+    margin-bottom: 15px;
 }
