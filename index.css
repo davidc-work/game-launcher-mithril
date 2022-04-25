@@ -66,7 +66,7 @@ body {
 }
 
 .btn-sidebar:hover {
-    background-color: rgb(77, 77, 77);
+    background-color: rgb(56 60 65);
 }
 
 ::-webkit-scrollbar {
@@ -150,8 +150,11 @@ body {
     margin: 0;
     font-size: 48px;
     color: white;
-    text-shadow: 0px 0px 6px black;
-    filter: drop-shadow(0px 0px 8px black);
+    /* text-shadow: 0px 0px 6px black; */
+    /* filter: drop-shadow(0px 0px 8px black); */
+    background-color: #618dcf;
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
 }
 
 #create-community-button {
@@ -203,11 +206,14 @@ body {
 }
 
 #community-display {
+    position: relative;
     display: inline-block;
     width: calc(100% - 198px);
     height: 100%;
     background-color: #343434;
     vertical-align: top;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 #public-servers-all {
@@ -378,6 +384,10 @@ body {
     font-size: 16px;
 }
 
+.chat-box:focus-within {
+    border-bottom: 2px solid rgb(87 120 143)
+}
+
 .cover {
     position: absolute;
     width: 100%;
@@ -508,4 +518,129 @@ input.dark-1:focus {
 
 .navbar>.nav-btn.selected {
     background-color: rgb(67 127 167)
+}
+
+#posts-container {
+    padding: 30px;
+}
+
+#posts-container .post-listing {
+    height: 80px;
+    border-radius: 20px;
+    margin: auto;
+    margin-bottom: 20px;
+    background-color: #262626;
+    overflow-x: hidden;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+#posts-container .post-listing:hover {
+    background-color: #4e4e4e;
+}
+
+#posts-container .post-listing-inner {
+    height: fit-content;
+    padding-top: 5px;
+}
+
+.post-listing img {
+    width: 40px;
+    height: 40px;
+    padding: 15px;
+    display: inline-block;
+}
+
+.post-listing .right-content {
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.post-listing .right-content>* {
+    margin: 0;
+}
+
+.post-listing .right-content p:first-child {
+    color: rgb(0, 172, 230);
+    margin-top: 0;
+}
+
+.post-listing .right-content p:nth-child(2) {
+    color: white;
+}
+
+.post {
+    padding: 35px;
+    padding-top: 45px;
+    box-sizing: border-box;
+}
+
+.post .title-container,
+.post .body-container {
+    position: relative;
+    box-sizing: border-box;
+    background-color: #262626;
+    border: 2px solid #8a94a1;
+    border-radius: 10px;
+}
+
+.post .title-container {
+    z-index: 2;
+    max-width: 100%;
+    width: fit-content;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.post .title-container p:first-child {
+    color: rgb(0, 172, 230);
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 22px;
+    line-height: 22px;
+}
+
+.post .title-container p:nth-child(2) {
+    color: white;
+    margin: 0;
+    font-size: 14px;
+}
+
+.post .body-container {
+    z-index: 1;
+    width: 100%;
+    padding: 20px;
+}
+
+.post .body-container p {
+    color: white;
+    margin: 0;
+    white-space: break-spaces;
+    line-height: 26px;
+}
+
+.separator {
+    margin: 50px 0 50px 0;
+    height: 1px;
+    width: 100%;
+    background-color: #8a94a1;
+}
+
+.back-btn {
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.back-btn img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.back-btn>span {
+    vertical-align: middle;
 }

@@ -19,10 +19,6 @@ let steamGames, allGames;
 let com, selectedPublicServer, selectedChannel;
 let selectedGame = {}, gameBannerImg;
 
-// const port = 3000;
-// const base = 'http://127.0.0.1';
-// const url = `${base}:${port}`;
-
 let socket, community;
 let sendChat;
 
@@ -34,7 +30,6 @@ const setSocket = serverUrl => {
     });
 
     socket.on('add-message', data => {
-        console.log(data);
         CommunityDisplayComponent.addChat({
             user: data.user,
             msg: data.msg
@@ -42,7 +37,6 @@ const setSocket = serverUrl => {
     });
 
     community = require('./modules/community')(socket);
-    sendChat = community.sendChat;
 
     require('fetch-installed-software').getAllInstalledSoftware().then(programs => {
         const steamInfo = programs.find(program => program.RegistryDirName == 'Steam');
@@ -55,7 +49,8 @@ const setSocket = serverUrl => {
 let page = {
     login: !isDev,
     community: 'exists',
-    communityMain: 'hot',
+    communityMain: 'main',
+    communityTab: 'hot',
     communitySidebar: 'main',
     overlay: false,
     createServerPrompt: false
@@ -72,9 +67,17 @@ const setPage = (component, pageName) => {
     requestAnimationFrame(() => feather.replace({ color: 'white' }));
 }
 
+const setPosts = () => {
+    return new Promise(async resolve => {
+        const posts = await community.emit('get-posts', { community_id: com._id });
+        await MainComponent.GameDisplayComponent.CommunityComponent.CommunityDisplayComponent.CommunityMainComponent.setPosts(posts);
+        resolve();
+    })
+}
+
 const setPublicServers = () => {
     return new Promise(async resolve => {
-        const publicServers = await community.getPublicServers(com._id);
+        const publicServers = await community.emit('get-public-servers', { community_id: com._id });
         await MainCommunityContentComponent.setPublicServers(publicServers);
         resolve();
     })
@@ -85,8 +88,16 @@ const showPublicServerPrompt = () => {
     page.overlay = true;
 }
 
+const createPost = async data => {
+    const result = await community.emit('create-post', data);
+    console.log(result);
+}
+
 const createPublicServer = async serverName => {
-    const result = await community.createPublicServer(com.name, serverName);
+    const result = await community.emit('create-public-server', {
+        communityName: com.name,
+        serverName
+    });
     await setPublicServers();
 }
 
@@ -122,9 +133,9 @@ const setCommunity = gameName => {
     });
 }
 
-const updateCommunity = communityName => {
+const updateCommunity = name => {
     return new Promise(async resolve => {
-        const result = await community.getCommunity(communityName);
+        const result = await community.emit('get-community', { name });
 
         setPage('community', result.exists ? 'exists' : 'not-exists');
 
@@ -138,17 +149,19 @@ const routeCommunityHome = () => {
 
         selectedPublicServer = undefined;
         selectedChannel = undefined;
+        setPosts();
         setPublicServers();
 
-        setPage('communitySidebar', 'main');
-        setPage('communityMain', 'hot');
+        page.communitySidebar = 'main';
+        page.communityMain = 'main';
+        m.redraw();
 
         resolve();
     });
 }
 
 const reset = async () => {
-    const res = await community.reset();
+    const res = await community.emit('reset-communities');
     console.log(res);
 }
 
@@ -162,7 +175,7 @@ const routeCommunityServer = serverName => {
 
             setPage('communitySidebar', 'server');
 
-            const server = await community.getServer(com.name, serverData.name);
+            const server = await community.emit('get-server', { community: com.name, serverName: serverData.name });
 
             server.channels.forEach(channel => {
                 const e = $('<div>').addClass('channel-list-item btn btn-sidebar');
@@ -182,7 +195,7 @@ const selectChannel = async (server, channelName) => {
     const channel = server.channels.find(channel => channel.name == channelName);
     selectedChannel = channel;
 
-    const channelData = await community.joinChannel(selectedChannel._id);
+    const channelData = await community.emit('join-channel', { channel_id: selectedChannel._id });
 
     const { chat } = channelData;
 
@@ -191,7 +204,7 @@ const selectChannel = async (server, channelName) => {
     $('.channel-list-item').removeClass('selected');
     $($('.channel-list-item').toArray().find(e => e.children[0].innerText == channelName)).addClass('selected');
     CommunityDisplayComponent.setChat(chat);
-    setPage('communityMain', false);
+    setPage('communityMain', 'channel');
 }
 
 const selectGame = async gameName => {
@@ -207,7 +220,7 @@ const selectGame = async gameName => {
 }
 
 const createCommunity = async () => {
-    const result = await community.createCommunity(selectedGame.communityName);
+    const result = await community.emit('create-community', { name: selectedGame.communityName });
     await setCommunity(selectedGame.name);
 }
 

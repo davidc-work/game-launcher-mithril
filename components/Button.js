@@ -45,7 +45,7 @@ const PlayBtnComponent = () => {
 
 const CreateCommunityBtnComponent = () => {
     return (createButton({
-        text: 'Create Community',
+        text: 'Request Community',
         type: 1,
         color: 'blue',
         id: 'create-community-button',

@@ -1,7 +1,9 @@
 const CommunityMainComponent = require('./CommunityMain.js');
+const PostComponent = require('./Post');
 
 let chatHistory = [];
 let chat = [];
+let post;
 
 const constructMsg = msg => {
     return m('div.chat-msg', [
@@ -41,30 +43,37 @@ const addMsg = (msg, redraw = true) => {
 }
 
 const CommunityDisplayComponent = {
+    CommunityMainComponent,
     view: () => {
         return m('div#community-display', [
-            page.communityMain ?
+            page.communityMain == 'main' ?
                 m(CommunityMainComponent) :
-                m('div#server-chat-all', [
-                    m('div.chat-container', [
-                        chat.length ? m('div.chat', chat) : m('div', { style: 'color: white;' }, 'This chat is empty!')
-                    ]),
-                    m('div.chat-box-container', [
-                        m('div.chat-box', [
-                            m('i', { 'data-feather': 'plus-circle' }),
-                            m('input', {
-                                type: 'text',
-                                placeholder: 'Type something...',
-                                onkeyup: async function (e) {
-                                    if (e.key == 'Enter') {
-                                        const result = await sendChat(user, e.target.value, selectedChannel, socket);
-                                        e.target.value = '';
+                page.communityMain == 'post' ?
+                    m(PostComponent(post)) :
+                    m('div#server-chat-all', [
+                        m('div.chat-container', [
+                            chat.length ? m('div.chat', chat) : m('div', { style: 'color: white;' }, 'This chat is empty!')
+                        ]),
+                        m('div.chat-box-container', [
+                            m('div.chat-box', [
+                                m('i', { 'data-feather': 'plus-circle' }),
+                                m('input', {
+                                    type: 'text',
+                                    placeholder: 'Type something...',
+                                    onkeyup: async function (e) {
+                                        if (e.key == 'Enter') {
+                                            const result = await community.emit('send-message', {
+                                                user,
+                                                msg: e.target.value,
+                                                channel_id: selectedChannel._id
+                                            });
+                                            e.target.value = '';
+                                        }
                                     }
-                                }
-                            })
+                                })
+                            ])
                         ])
                     ])
-                ])
         ]);
     },
     setChat: function (messages) {
@@ -76,6 +85,11 @@ const CommunityDisplayComponent = {
     },
     addChat: message => {
         addMsg(message);
+    },
+    setPost: p => {
+        post = p;
+        page.communityMain = 'post';
+        m.redraw();
     }
 }
 
