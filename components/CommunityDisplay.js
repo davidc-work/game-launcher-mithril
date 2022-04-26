@@ -58,7 +58,7 @@ const getPage = p => {
                 ]),
                 m('div.chat-box-container', [
                     m('div.chat-box', [
-                        m('i', { 'data-feather': 'plus-circle' }),
+                        m('img', { src: './assets/icons/plus-circle.svg' }),
                         m('input', {
                             type: 'text',
                             placeholder: 'Type something...',

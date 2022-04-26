@@ -17,10 +17,12 @@ let steamInstallDir;
 
 let steamGames, allGames;
 let com, selectedPublicServer, selectedChannel;
-let selectedGame = {}, gameBannerImg;
+let selectedGame = {}, serverChannels, gameBannerImg;
 
 let socket, community;
 let sendChat;
+
+const globalComponents = {};
 
 const setSocket = serverUrl => {
     socket = io(serverUrl);
@@ -103,6 +105,19 @@ const createPublicServer = async serverName => {
     await setPublicServers();
 }
 
+const createChannel = name => {
+    return new Promise(async resolve => {
+        const result = await community.emit('create-channel', {
+            channelName: name,
+            server_id: selectedPublicServer._id
+        });
+
+        await routeCommunityServer(selectedPublicServer.name);
+
+        resolve();
+    });
+}
+
 const setCommunity = gameName => {
     return new Promise(async resolve => {
         const game = allGames.find(game => game.name == gameName);
@@ -168,6 +183,17 @@ const reset = async () => {
     console.log(res);
 }
 
+const getChannels = () => {
+    return new Promise(async resolve => {
+        const channels = await community.emit('get-channels', { server_id: selectedPublicServer._id });
+        resolve(channels);
+    })
+}
+
+const updateChannels = () => {
+
+}
+
 const routeCommunityServer = serverName => {
     return new Promise(async resolve => {
         if (!com.exists) resolve();
@@ -176,38 +202,36 @@ const routeCommunityServer = serverName => {
         if (serverData = com.publicServers.find(server => server.name == serverName)) {
             selectedPublicServer = serverData;
 
-            setPage('communitySidebar', 'server');
+            page.communitySidebar = 'server';
 
-            const server = await community.emit('get-server', { community: com.name, serverName: serverData.name });
+            //const server = await community.emit('get-server', { community: com.name, serverName: serverData.name });
 
-            server.channels.forEach(channel => {
-                const e = $('<div>').addClass('channel-list-item btn btn-sidebar');
-                e.append($('<p>').text(channel.name));
-                e.click(() => selectChannel(server, channel.name));
-                $('#channel-list').append(e);
-            });
-
-            selectChannel(server, 'main');
+            serverChannels = await getChannels();
+            await selectChannel(serverChannels[0]._id);
+            globalComponents.serverContent.setChannels(serverChannels);
         }
 
         resolve();
     });
 }
 
-const selectChannel = async (server, channelName) => {
-    const channel = server.channels.find(channel => channel.name == channelName);
-    selectedChannel = channel;
+const selectChannel = async channel_id => {
+    return new Promise(async resolve => {
+        //const channel = server.channels.find(channel => channel.name == channelName);
+        selectedChannel = await community.emit('get-channel', { channel_id });
+        if (!selectedChannel) return routeCommunityHome();
 
-    const channelData = await community.emit('join-channel', { channel_id: selectedChannel._id });
+        const joined = await community.emit('join-channel', { channel_id });
 
-    const { chat } = channelData;
+        const { chat } = selectedChannel;
 
-    if (!chat) return;
+        if (!chat) return;
+        CommunityDisplayComponent.setChat(chat);
+        page.communityMain = 'channel';
+        m.redraw();
 
-    $('.channel-list-item').removeClass('selected');
-    $($('.channel-list-item').toArray().find(e => e.children[0].innerText == channelName)).addClass('selected');
-    CommunityDisplayComponent.setChat(chat);
-    setPage('communityMain', 'channel');
+        resolve();
+    });
 }
 
 const selectGame = async gameName => {
@@ -218,7 +242,6 @@ const selectGame = async gameName => {
     $(selectedElement).addClass('selected');
 
     await setCommunity(gameName);
-
     await routeCommunityHome();
 }
 
