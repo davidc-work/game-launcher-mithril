@@ -10,12 +10,18 @@ contextMenu({
 
 require('electron-reload')(__dirname);
 
+app.on('browser-window-created', (_, window) => {
+    require("@electron/remote/main").enable(window.webContents)
+})
+require('@electron/remote/main').initialize();
+
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 1000,
-        height: 800,
+        height: 830,
         minWidth: 1000,
-        minHeight: 500,
+        minHeight: 530,
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
