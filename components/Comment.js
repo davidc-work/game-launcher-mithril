@@ -11,9 +11,7 @@ const createCommentComponent = (comment, nested = 0) => {
     const { user_id, body, date, children } = comment;
     const childrenComponents = children ? (children.length ? children.map(c => m(CommentComponent(c, nested + 1))) : []) : [];
 
-    return m('div.comment', {
-        style: 'margin-left: 15px'
-    }, [
+    return m('div.comment', {}, [
         m('div.comment-content', [
             m('p', user_id),
             m('p', body),
@@ -24,12 +22,12 @@ const createCommentComponent = (comment, nested = 0) => {
             ]),
             commentBoxes[comment.id] ?
                 m('div.comment-input-container', [
-                    m('textarea.comment-box.dark-1', { placeholder: 'Comment...', style: 'width: 335px; height: 120px;' }),
+                    m('textarea.comment-box.dark-1.min-round', { placeholder: 'Comment...', style: 'width: 335px; height: 120px; margin-top: 10px;' }),
                     m(btn.createButton({
                         text: 'Post',
                         color: 'dark',
                         type: 1,
-                        style: 'margin-left: 10px; margin-bottom: 10px;',
+                        style: 'margin-bottom: 10px;',
                         onclick: function () {
                             newComment(this.parentElement.children[0].value, comment.id);
                             toggleCommentBox(comment.id, false);

@@ -12,6 +12,26 @@
     margin-bottom: 50px;
 }
 
+.entering {
+    animation-fill-mode: forwards;
+}
+
+.entering.right {
+    animation: 0.25s enter-right;
+}
+
+@keyframes enter-right {
+    from {
+        opacity: 0;
+        transform: translateX(100px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0)
+    }
+}
+
 @keyframes exit-left {
     from {
         right: 0;

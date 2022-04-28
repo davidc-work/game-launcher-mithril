@@ -1,3 +1,5 @@
+// TODO: move most of this shit to community module
+
 const isDev = true;
 let user = 'test_user';
 
@@ -62,11 +64,6 @@ let page = {
 const updateGamesList = () => {
     steamGames = steam.getGames();
     allGames = steamGames.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-const setPage = (component, pageName) => {
-    page[component] = pageName;
-    requestAnimationFrame(() => feather.replace({ color: 'white' }));
 }
 
 const setPosts = () => {
@@ -168,7 +165,9 @@ const setCommunity = gameName => {
 
         com = await updateCommunity(selectedGame.communityName);
         await setPublicServers();
-        setPage('communitySidebar', 'main');
+
+        page.communitySidebar = 'main';
+        m.redraw();
 
         (async function () {
             const img = await GOOGLE_IMG_SCRAP({
@@ -190,7 +189,8 @@ const updateCommunity = name => {
     return new Promise(async resolve => {
         const result = await community.emit('get-community', { name });
 
-        setPage('community', result.exists ? 'exists' : 'not-exists');
+        page.community = result.exists ? 'exists' : 'not-exists';
+        m.redraw();
 
         resolve(result);
     });

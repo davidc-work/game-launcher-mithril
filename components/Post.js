@@ -20,7 +20,7 @@ const PostComponent = post => {
                     m('p', post.body)
                 ]),
                 m('div.separator'),
-                m('textarea.comment-box.dark-1', { placeholder: 'New comment...', style: 'width: 450px' }),
+                m('textarea.comment-box.dark-1.min-round', { placeholder: 'New comment...', style: 'width: 450px' }),
                 m(btn.createButton({
                     text: 'Post',
                     type: 1,
@@ -29,8 +29,7 @@ const PostComponent = post => {
                         const comment = $('.comment-box').val();
                         await newComment(comment);
                         m.redraw();
-                    },
-                    style: 'margin: 10px;'
+                    }
                 })),
                 m('div.comments-container', postComments || [])
             ]);
