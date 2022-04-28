@@ -16,7 +16,8 @@ const steam = require('./modules/steam');
 let steamInstallDir;
 
 let steamGames, allGames;
-let com, selectedPublicServer, selectedChannel;
+let com, selectedPublicServer, selectedChannel, selectedPost;
+let postComments;
 let selectedGame = {}, serverChannels, gameBannerImg;
 
 let socket, community;
@@ -97,6 +98,39 @@ const createPost = data => {
     });
 }
 
+const setComments = post_id => {
+    return new Promise(async resolve => {
+        const comments = await getComments(post_id);
+
+        postComments = require('./modules/generateComments')(comments);
+        m.redraw();
+    });
+}
+
+const getComments = post_id => {
+    return new Promise(async resolve => {
+        const response = await community.emit('get-comment-section', { post_id });
+
+        resolve(response.comments);
+    });
+}
+
+const newComment = (comment, replyTo = null) => {
+    return new Promise(async resolve => {
+        const c = await community.emit('create-comment', {
+            user_id: user,
+            body: comment,
+            date: new Date(),
+            post_id: selectedPost._id,
+            replyTo
+        });
+
+        await setComments(selectedPost._id);
+
+        resolve(c);
+    })
+}
+
 const createPublicServer = async serverName => {
     const result = await community.emit('create-public-server', {
         communityName: com.name,
@@ -118,6 +152,8 @@ const createChannel = name => {
     });
 }
 
+const generateCommunityName = gameName => gameName.replace(/[^a-z0-9]/gi, '').toLowerCase();
+
 const setCommunity = gameName => {
     return new Promise(async resolve => {
         const game = allGames.find(game => game.name == gameName);
@@ -125,7 +161,7 @@ const setCommunity = gameName => {
         selectedGame = {
             name: game.name,
             url: 'steam://rungameid/' + game.appid,
-            communityName: game.name.toLowerCase().replaceAll(' ', '')
+            communityName: generateCommunityName(game.name)
         };
 
         $('#header-text-container > p').text(game.name);

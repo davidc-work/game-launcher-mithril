@@ -21,6 +21,8 @@ const generatePosts = () => {
     return p.map(post => {
         return m('div.post-listing', {
             onclick: () => {
+                setComments(post._id);
+                selectedPost = post;
                 $('#posts-container').addClass('exiting left');
                 setTimeout(() => $('#community-main .navbar').addClass('exiting minimize'), 1);
                 setTimeout(() => MainComponent.GameDisplayComponent.CommunityComponent.CommunityDisplayComponent.setPost(post), 250);

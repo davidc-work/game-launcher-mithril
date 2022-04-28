@@ -25,12 +25,14 @@
     "feather-icons": "^4.29.0",
     "fetch-installed-software": "^0.0.7",
     "google-img-scrap": "^1.0.6",
+    "http-proxy-agent": "^5.0.0",
     "json-buffer": "^3.0.1",
     "mithril": "^2.0.4",
     "open-shortcut": "^4.0.0",
     "shortcut-url": "^4.0.0",
     "steam-acf-parser": "^1.0.0",
-    "url-filea": "^1.0.0"
+    "url-filea": "^1.0.0",
+    "which": "^2.0.2"
   },
   "build": {
     "appId": "game-launcher-electron",
