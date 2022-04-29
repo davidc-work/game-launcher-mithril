@@ -57,6 +57,7 @@ let page = {
     communityMain: 'main',
     communityTab: 'hot',
     communitySidebar: 'main',
+    sidebarNav: 'Games',
     overlay: false,
     createServerPrompt: false
 }

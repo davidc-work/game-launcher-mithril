@@ -1,4 +1,3 @@
-const btn = require('./Button');
 const GameDisplayHeaderComponent = require('./GameDisplayHeader');
 const CommunityComponent = require('./Community');
 
@@ -9,7 +8,7 @@ const GameDisplayComponent = {
         return m('div#game-display', [
             m('div#game-display-content', [
                 m(GameDisplayHeaderComponent),
-                page.community == 'exists' ? m(CommunityComponent) : m(btn.CreateCommunityBtnComponent)
+                m(CommunityComponent)
             ])
         ]);
     }

@@ -30,7 +30,7 @@ const MainComponent = {
                     m(OverlayComponent),
                     m(OverlayPromptComponent),
                     m(btn.ResetBtnComponent),
-                    m(SidebarComponent),
+                    // m(SidebarComponent),
                     m(GameDisplayComponent)
                 ])
         ]
